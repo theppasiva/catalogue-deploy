@@ -81,7 +81,7 @@ resource "null_resource" "catalogue_delete" {
     command = "aws ec2 terminate-instances --instance-ids ${module.catalogue.id}"
   }
 
-    depends_on = [ aws_ami_from_instance.catalogue ]
+  depends_on = [ aws_ami_from_instance.catalogue]
 }
 
 resource "aws_launch_template" "catalogue" {
@@ -91,7 +91,6 @@ resource "aws_launch_template" "catalogue" {
   instance_initiated_shutdown_behavior = "terminate"
   instance_type = "t2.micro"
   update_default_version = true
-
 
   vpc_security_group_ids = [data.aws_ssm_parameter.catalogue_sg_id.value]
 
@@ -114,6 +113,7 @@ resource "aws_autoscaling_group" "catalogue" {
   desired_capacity          = 2
   vpc_zone_identifier       = split(",", data.aws_ssm_parameter.private_subnet_ids.value)
   target_group_arns = [ aws_lb_target_group.catalogue.arn ]
+  
   launch_template {
     id      = aws_launch_template.catalogue.id
     version = aws_launch_template.catalogue.latest_version
@@ -136,7 +136,6 @@ resource "aws_autoscaling_group" "catalogue" {
   timeouts {
     delete = "15m"
   }
-
 }
 
 resource "aws_lb_listener_rule" "catalogue" {
@@ -166,6 +165,6 @@ resource "aws_autoscaling_policy" "catalogue" {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
 
-    target_value = 5.0 #in general it's 75 or 80
+    target_value = 5.0
   }
 }
