@@ -30,8 +30,7 @@ pipeline {
                 """
             }
         }
-    }    
-    stages {
+    
         stage('Init') {
             steps {
                 sh """
@@ -39,8 +38,8 @@ pipeline {
                     terraform init --backend-config=${params.environment}/backend.tf -reconfigure
                 """
             }
-        }
-    }  
+        }   
+    } 
     // post build
     post { 
         always { 
